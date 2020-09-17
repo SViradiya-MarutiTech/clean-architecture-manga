@@ -4,11 +4,11 @@
 
 namespace Infrastructure.DataAccess
 {
-    using System;
-    using System.IO;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Design;
     using Microsoft.Extensions.Configuration;
+    using System;
+    using System.IO;
 
     /// <summary>
     ///     ContextFactory.

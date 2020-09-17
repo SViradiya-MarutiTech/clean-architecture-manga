@@ -9,9 +9,20 @@
     <DockerServiceName>webapi</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="docker-compose.override.yml">
+    <None Include="docker-compose.production.yml" />
+    <None Include="docker-compose.vs.debug.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.yml" />
+    <None Include="https\localhost.crt" />
+    <None Include="https\localhost.key" />
+    <None Include="https\localhost.pfx" />
+    <None Include="init-db.sh" />
+    <None Include="makecert.sh" />
+    <None Include="ssl-selfsigned.cnf" />
+    <None Include="startup-backend-only.sh" />
+    <None Include="startup.sh" />
+    <None Include="trustcert-mac.sh" />
+    <None Include="trustcert-windows.ps1" />
   </ItemGroup>
 </Project>

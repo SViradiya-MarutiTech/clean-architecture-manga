@@ -1,7 +1,10 @@
 namespace WebApi
 {
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.DataProtection;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.HttpOverrides;
     using Microsoft.AspNetCore.Mvc.ApiExplorer;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -10,9 +13,6 @@ namespace WebApi
     using Modules.Common;
     using Modules.Common.FeatureFlags;
     using Modules.Common.Swagger;
-    using Microsoft.AspNetCore.HttpOverrides;
-    using Microsoft.AspNetCore.DataProtection;
-    using Microsoft.AspNetCore.Http;
 
     /// <summary>
     ///     Startup.
@@ -79,22 +79,25 @@ namespace WebApi
             {
                 app.UseExceptionHandler("/api/V1/CustomError")
                     .UseHsts();
-
-                app.Use((context, next) =>
-                {
-                    context.Request.PathBase = new PathString("/accounts-api");
-                    return next();
-                });
             }
 
+            string basePath = Configuration["ASPNETCORE_BASEPATH"];
+            if (!string.IsNullOrEmpty(basePath))
+            {
+                app.Use(async (context, next) =>
+                {
+                    context.Request.PathBase = basePath;
+                    await next.Invoke()
+                        .ConfigureAwait(false);
+                });
+            }
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                ForwardedHeaders = ForwardedHeaders.All
             });
 
             app
                 .UseHealthChecks()
-                .UseHttpsRedirection()
                 .UseCustomCors()
                 .UseCustomHttpMetrics()
                 .UseRouting()

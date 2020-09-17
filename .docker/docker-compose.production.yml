@@ -2,6 +2,9 @@ version: '3.4'
 
 services:
   nginx:
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
       - ../.docker/https/localhost.crt:/etc/ssl/certs/localhost.crt:ro
       - ../.docker/https/localhost.key:/etc/ssl/private/localhost.key:ro

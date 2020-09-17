@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using IdentityServer4;
 using IdentityServerHost.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -87,23 +86,22 @@ namespace test3
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
+
+            string basePath = Configuration["ASPNETCORE_BASEPATH"];
+            if (!string.IsNullOrEmpty(basePath))
             {
-                app.Use((context, next) =>
+                app.Use(async (context, next) =>
                 {
-                    context.Request.PathBase = new PathString("/identity-server");
-                    return next();
+                    context.Request.PathBase = basePath;
+                    await next.Invoke();
                 });
             }
- 
-            app.UseStaticFiles();
-            // app.UseCookiePolicy();
-            // app.UseCors("CorsPolicy");
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                ForwardedHeaders = ForwardedHeaders.All
             });
+
+            app.UseStaticFiles();
 
             app.UseRouting();
             app.UseIdentityServer();
